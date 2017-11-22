@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Title of the document</title>
+	<link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.css">
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" media="all" href="css/main.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.js"></script>
+</head>
+<body ng-app="ict" ng-controller="testController as testCtrl">
+	<header class="bs-docs-nav navbar navbar-static-top" id="top">
+		<div class="container">
+			<div class="navbar-header">
+				<button aria-controls="bs-navbar" aria-expanded="false" class="collapsed navbar-toggle" data-target="#bs-navbar" data-toggle="collapse" type="button"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> <a href="../" class="navbar-brand">Bootstrap</a> </div>
+				<nav class="collapse navbar-collapse" id="bs-navbar">
+					<ul class="nav navbar-nav">
+						<li> <a href="getting-started/">Getting started</a>
+						</li>
+						<li> <a href="css/">CSS</a>
+						</li>
+						<li> <a href="components/">Components</a>
+						</li>
+						<li> <a href="javascript/">JavaScript</a>
+						</li>
+						<li> <a href="customize/">Customize</a>
+						</li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="http://themes.getbootstrap.com" onclick="ga(&quot;send&quot;,&quot;event&quot;,&quot;Navbar&quot;,&quot;Community links&quot;,&quot;Themes&quot;)">Themes</a></li>
+						<li><a href="https://jobs.getbootstrap.com" onclick="ga(&quot;send&quot;,&quot;event&quot;,&quot;Navbar&quot;,&quot;Community links&quot;,&quot;Jobs&quot;)">Jobs</a></li>
+						<li><a href="http://expo.getbootstrap.com" onclick="ga(&quot;send&quot;,&quot;event&quot;,&quot;Navbar&quot;,&quot;Community links&quot;,&quot;Expo&quot;)">Expo</a></li>
+						<li><a href="http://blog.getbootstrap.com" onclick="ga(&quot;send&quot;,&quot;event&quot;,&quot;Navbar&quot;,&quot;Community links&quot;,&quot;Blog&quot;)">Blog</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header>
+		<section class="dragableEditor">			
+			<aside class="dragableEditor__aside">
+		        <ul class="dragableEditor__blocksList blankList" ng-repeat="item in sourceDragableItems | orderBy: 'sort'">
+		            <li class="blankList__item">
+		                <div  ng-class="{'addNewCategory': item.management, 'addNewItem': item.addItem}" class="dragableEditor__blockItem dragStart" draggable="true">{{item.name}}</div>
+		            </li>
+		        </ul>
+		    </aside>
+			
+			 <div class="dragableEditor__workArea" ng-repeat="category in mainItems | orderBy: 'sort'">			
+				<section draggable="true" class="operatingModel operatingModel__fullHeight handlerDrop">
+					<div zoom-level="canvasIdtoZoom"></div>
+					<div id="canvasIdtoZoom" class="operatingModel__root operatingModel__fullHeight enableAdditionCategory">
+						<h1 class="operatingModel__title">{{category.name}}</h1>
+
+						<pre>{{mainItems | json}}</pre>
+
+						<div class="operatingModel__level1 operatingModel__fullHeight operatingModel__col enableAdditionCategory"  ng-repeat="category in category.categories">
+							<h2 class="operatingModel__title">{{category.name}}</h2>
+							<div draggable="true" class="operatingModel__level2 operatingModel__fullHeight operatingModel__col handlerDrop enableAddNewItem changeSubcategorySorting dragStart" ng-repeat="subCategory in category.categories | orderBy: 'sort'">
+								<h3 class="operatingModel__title">{{subCategory.name}}</h3>
+
+								<div class="operatingModel__level3 dragStart noselect" 
+										draggable="true" 
+										ng-repeat="item in subCategory.categories | orderBy: 'sort'" >									
+									<div class="operatingModel__capabilitiesWrapper _resizeShadow" resize-block>
+										<h3 class="operatingModel__title">{{item.title}}</h3>
+										<div class="dragableEditor__blockItem changeSorting" >{{item.name}}</div>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+					</div>
+				</section>
+			</div>
+		</section>
+
+		<script src="app.js"></script>
+		<script src="testController.js"></script>
+		<script src="resizeDirective.js"></script>
+		<script src="zoomLevel.js"></script>
+	</body>
+	</html>
