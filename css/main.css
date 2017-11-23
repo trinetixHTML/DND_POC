@@ -137,13 +137,13 @@ h3.operatingModel__title {
 }
 	.operatingModel__level3 .operatingModel__title	{
 		left: 10px;
-		z-index: 3;
+		//z-index: 3;
 	}
 .operatingModel__capabilitiesWrapper {
 	background: #e8e8e8;
 	padding: 10px;
 	padding-top: 30px;	
-	z-index: 2;
+	//z-index: 2;
 	position: relative;
 }
 	.operatingModel__capabilitiesWrapper._resizeShadow:before {
@@ -155,7 +155,7 @@ h3.operatingModel__title {
 		bottom: 0;
 		left: 0;
 		right: 0;
-		z-index: 1;
+		//z-index: 1;
 		opacity: 0.09;
 	}
 .operatingModel__col {

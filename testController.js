@@ -21,37 +21,44 @@
             var category1 = {
                name: 'Printing & Personal System Group',
                sort: 1,
-               class2: true,
-               firstClass: true,
                categories: [
                    {
-                       halfClass: true,
-                       firstClass: true,
                        sort: 1,
                        name: 'Personal Systems',
-                       categories: [{ title: 'R&D', name: 'Dragable Item 1', sort: 1 }, { title: 'POC', name: 'Dragable Item 2', sort: 2 }]
+                       categories: [{ name: 'R&D', items: [{ name: 'Dragable Item 1', sort: 1 }, { name: 'Dragable Item 2', sort: 2 }], sort: 1 },
+                                   { name: 'POC', items: [{ name: 'Dragable Item 2', sort: 1 }], sort: 2 }]
                    },
                    {
-                       halfClass: true,
-                       lastClass: true,
                        sort: 2,
                        name: 'Imaging & Printing',
-                       categories: [{ title: 'R&D', name: 'Dragable Item 1', sort: 1 }]
+                       categories: [{ name: 'R&D', items: [{ name: 'Dragable Item 1', sort: 1 }], sort: 1 }]
                    }]
             };
 
             var category2 = {
-               sort: 2,
-               name: 'Software',
-               class1: true,
-               categories: [
-                   {
-                       lastClass: true,
-                       firstClass: true,
-                       sort: 1,
-                       name: 'Imaging & Printing',
-                       categories: [{ title: 'test1', name: 'Dragable Item 1', sort: 1 }, { title: 'test2', name: 'Dragable Item 2', sort: 2 }, { title: 'test2', name: 'Dragable Item 3', sort: 3 }]
-                   }]
+                sort: 2,
+                name: 'Software',
+                categories: [
+                    {
+                        sort: 1,
+                        name: 'Imaging & Printing',
+                        categories: [
+                            {
+                                name: 'test1',
+                                sort: 1,
+                                items: [{ name: 'Dragable Item 1', sort: 1 }]
+                            },
+                            {
+                                name: 'test2',
+                                sort: 2,
+                                items: [
+                                    { name: 'Dragable Item 1', sort: 1 }, { name: 'Dragable Item 2', sort: 2 },
+                                    { name: 'Dragable Item 3', sort: 3 }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             };
 
             product.categories.push(category1);
@@ -108,10 +115,12 @@
                 var isAvailableAddItem = false;
                 var isAvailableChangeSort = false;
                 var isChangeSubcategorySorting = false;
+                var isChangeSubSubcategorySortingClass = false;
                 var managementClass = 'addNewCategory';
-                var availableItemSort = 'operatingModel__level3';
+                var availableItemSort = 'changeSortingItem';
                 var addNewCategoryClass = 'addNewItem';
                 var changeSubcategorySortingClass = 'changeSubcategorySorting';
+                var changeSubSubcategorySortingClass = 'changeSubSubcategorySorting';
 
 
                 var scope = angular.element(e.srcElement).scope();
@@ -125,6 +134,8 @@
                         isAvailableChangeSort = true;
                     } else if (item == changeSubcategorySortingClass) {
                         isChangeSubcategorySorting = true;
+                    } else if (item == changeSubSubcategorySortingClass) {
+                        isChangeSubSubcategorySortingClass = true;
                     }
                 });
 
@@ -140,7 +151,11 @@
                 }
                 else if (isChangeSubcategorySorting) {
                     _this.draggedElement = { targetObject: 'changeSubcategorySorting' };
-                    _this.moveFromPosition = scope.subCategory.sort;
+                    _this.moveFromPosition = scope.category.sort;
+                }
+                else if (isChangeSubSubcategorySortingClass) {
+                    _this.draggedElement = { targetObject: 'changeSubSubcategorySorting' };
+                    _this.moveFromPosition = scope.$parent.category.sort;
                 }
             }
 
@@ -158,9 +173,10 @@
                 var isMoveElement = false;
 
                 e.target.classList.forEach(function (item) {
+                  //  console.log(item);
                     if (item == _this.draggedElement.targetObject && (item == 'enableAdditionCategory' || item == 'enableAddNewItem')) {
                         isAddNewElement = true;
-                    } else if (item == _this.draggedElement.targetObject && (item == 'changeSorting' || item == 'changeSubcategorySorting')) {
+                    } else if (item == _this.draggedElement.targetObject && (item == 'changeSorting' || item == 'changeSubcategorySorting' || item == 'changeSubSubcategorySorting')) {
                         isMoveElement = true;
                     }
                 });
@@ -187,7 +203,7 @@
             function handleDragEnter(e) {
 
                 e.target.classList.forEach(function (item) {
-                    console.log(item);
+                    //console.log(item);
 
                 });
 
@@ -210,21 +226,18 @@
                         sortPosition = Math.max.apply(null, scope.category.categories.map(function (item) { return item.sort; })) + 1;;
                     }
 
-                    var item = {
-                        lastClass: true,
-                        firstClass: true,
-                        class1: true,
+                    var category = {
                         name: 'New category',
                         categories: [],
                         sort: sortPosition
                     };
 
-                    scope.category.categories.push(item);
+                    scope.category.categories.push(category);
 
                 } else if (_this.draggedElement.targetObject == 'changeSorting') {
                     var setPostion = scope.item.sort;
-                    var scopeCategoryList = angular.element(e.currentTarget).scope();
-                    var subCategories = scopeCategoryList.subCategory.categories;
+                    var scopeCategoryList = angular.element(e.srcElement.parentNode.parentNode).scope();
+                    var subCategories = scopeCategoryList.category.items;
                     var isDown = _this.moveFromPosition - setPostion < 0;
                     subCategories.forEach(function (item) {
 
@@ -241,8 +254,27 @@
                     });
 
                 } else if (_this.draggedElement.targetObject == 'changeSubcategorySorting') {
-                    var setPostion = scope.subCategory.sort;
-                    var scopeCategoryList = angular.element(e.currentTarget.parentElement).scope();
+                    var setPostion = scope.category.sort;
+                    var scopeCategoryList = angular.element(e.target.parentNode).scope();
+                    var subCategories = scopeCategoryList.category.categories;
+                    var isDown = _this.moveFromPosition - setPostion < 0;
+                    subCategories.forEach(function (item) {
+
+                        if (item.sort == _this.moveFromPosition) {
+                            item.sort = setPostion;
+                        }
+                        else if (item.sort >= setPostion && !isDown) {
+                            item.sort++;
+                        }
+                        else if (item.sort <= setPostion && isDown) {
+                            item.sort--;
+                        }
+
+                    });
+                }
+                else if (_this.draggedElement.targetObject == 'changeSubSubcategorySorting') {
+                    var setPostion = scope.category.sort;
+                    var scopeCategoryList = angular.element(e.srcElement.parentElement.parentElement.parentElement).scope();
                     var subCategories = scopeCategoryList.category.categories;
                     var isDown = _this.moveFromPosition - setPostion < 0;
                     subCategories.forEach(function (item) {
@@ -264,10 +296,13 @@
                     var value = _this.draggedElement.text;
                     var sortIdForNewItem = 1;
 
-                    if (scope.subCategory.categories.length) {
-                        sortIdForNewItem = Math.max.apply(null, scope.subCategory.categories.map(function (item) { return item.sort; })) + 1;;
+                    if (!scope.category.items) {
+                        scope.category.items = [];
                     }
-                    scope.subCategory.categories.push({
+                    if (scope.category.items.length) {
+                        sortIdForNewItem = Math.max.apply(null, scope.category.items.map(function (item) { return item.sort; })) + 1;;
+                    }
+                    scope.category.items.push({
                         title: 'title_' + value, name: 'name_' + value, sort: sortIdForNewItem
                     });
 
