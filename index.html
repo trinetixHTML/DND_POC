@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Title of the documentsss</title>
+	<title>Title of the document</title>
 	<link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.css">
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<link rel="stylesheet" media="all" href="css/main.css">
@@ -35,16 +35,16 @@
 				</nav>
 			</div>
 		</header>
-		<section class="dragableEditor">			
+		<section class="dragableEditor">
 			<aside class="dragableEditor__aside">
-		        <ul class="dragableEditor__blocksList blankList" ng-repeat="item in sourceDragableItems | orderBy: 'sort'">
-		            <li class="blankList__item">
-		                <div  ng-class="{'addNewCategory': item.management, 'addNewItem': item.addItem}" class="dragableEditor__blockItem dragStart" draggable="true">{{item.name}}</div>
-		            </li>
-		        </ul>
-		    </aside>
+				<ul class="dragableEditor__blocksList blankList" ng-repeat="item in sourceDragableItems | orderBy: 'sort'">
+					<li class="blankList__item">
+						<div  ng-class="{'addNewCategory': item.management, 'addNewItem': item.addItem}" class="dragableEditor__blockItem dragStart" draggable="true">{{item.name}}</div>
+					</li>
+				</ul>
+			</aside>
 			
-			 <div class="dragableEditor__workArea" ng-repeat="category in mainItems | orderBy: 'sort'">			
+			 <div class="dragableEditor__workArea" ng-repeat="category in mainItems | orderBy: 'sort'">
 				<section draggable="true" class="operatingModel operatingModel__fullHeight handlerDrop">
 					<div zoom-level="canvasIdtoZoom"></div>
 					<div id="canvasIdtoZoom" class="operatingModel__root operatingModel__fullHeight enableAdditionCategory">
@@ -52,18 +52,19 @@
 
 						<pre>{{mainItems | json}}</pre>
 
-						<div class="operatingModel__level1 operatingModel__fullHeight operatingModel__col enableAdditionCategory"  ng-repeat="category in category.categories">
+						<div class="operatingModel__level1 operatingModel__fullHeight operatingModel__col enableAdditionCategory ableToDrag"  ng-repeat="category in category.categories">
 							<h2 class="operatingModel__title">{{category.name}}</h2>
 							<div draggable="true" class="operatingModel__level2 operatingModel__fullHeight operatingModel__col handlerDrop changeSubcategorySorting enableAdditionCategory dragStart" ng-repeat="category in category.categories | orderBy: 'sort'">
 								<h3 class="operatingModel__title">{{category.name}}</h3>
 
-								<div class="operatingModel__level3 dragStart noselect enableAdditionCategory" ng-repeat="category in category.categories | orderBy: 'sort'" >									
-									<div class="operatingModel__capabilitiesWrapper _resizeShadow enableAddNewItem" resize-block>
+								<div class="operatingModel__level3 dragStart noselect enableAdditionCategory" ng-repeat="category in category.categories | orderBy: 'sort'" snap-on-resize>
+									<div class="operatingModel__capabilitiesWrapper enableAddNewItem" resize-block>
 										<h3 class="operatingModel__title dragStart changeSubSubcategorySorting "  draggable="true">{{category.name}}</h3>
-									    <div class="dragableEditor__blockItem changeSorting dragStart changeSortingItem handlerDrop " draggable="true" ng-repeat="item in category.items | orderBy: 'sort'">
-                                            <div>{{item.name}}</div>
-									    </div>
+										<div class="dragableEditor__blockItem changeSorting dragStart changeSortingItem handlerDrop " draggable="true" ng-repeat="item in category.items | orderBy: 'sort'">
+											<div>{{item.name}}</div>
+										</div>
 									</div>
+									<div class="dragSnappingShadow"></div>
 								</div>
 							</div>
 
@@ -78,5 +79,6 @@
 		<script src="testController.js"></script>
 		<script src="resizeDirective.js"></script>
 		<script src="zoomLevel.js"></script>
+		<script src="snapOnResize.js"></script>
 	</body>
 	</html>

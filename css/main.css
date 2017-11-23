@@ -143,21 +143,9 @@ h3.operatingModel__title {
 	background: #e8e8e8;
 	padding: 10px;
 	padding-top: 30px;	
-	//z-index: 2;
+	z-index: 2;
 	position: relative;
 }
-	.operatingModel__capabilitiesWrapper._resizeShadow:before {
-		content: '';
-		display: block;
-		position: absolute;
-		background: black;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		//z-index: 1;
-		opacity: 0.09;
-	}
 .operatingModel__col {
 	margin-right: 10px;
 }
@@ -174,7 +162,6 @@ h3.operatingModel__title {
 }
 
 [resize-block] { 
-  overflow:hidden;
 }
 [resize-block].resizable {
    position: relative;
@@ -252,3 +239,24 @@ h3.operatingModel__title {
 		width: 35px;
 		text-align: center;
 	}
+@keyframes ableToDragAnimation {
+    from {outline: 4px dotted #006DB5;}
+    to {outline: 4px dashed #006DB5;}
+}
+.ableToDrag {
+	animation: 1s infinite ableToDragAnimation;
+}
+.dragSnappingShadow {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	background: black;
+	opacity: .5;
+	z-index: 1;
+	width: 100%;
+	transition: width .5s;
+}
+.dragSnappingShadow._started {
+	width: 300px;
+}
