@@ -121,6 +121,7 @@
                 var addNewCategoryClass = 'addNewItem';
                 var changeSubcategorySortingClass = 'changeSubcategorySorting';
                 var changeSubSubcategorySortingClass = 'changeSubSubcategorySorting';
+                _this.movedItem = null;
 
 
                 var scope = angular.element(e.srcElement).scope();
@@ -141,13 +142,24 @@
 
                 if (isManagementClass) {
                     _this.draggedElement = { targetObject: 'enableAdditionCategory' };
+                    addClass('enableAdditionCategory ');
                 }
                 else if (isAvailableAddItem) {
                     _this.draggedElement = { targetObject: 'enableAddNewItem', text: e.target.innerText };
+                    addClass('enableAddNewItem');
                 }
                 else if (isAvailableChangeSort) {
                     _this.draggedElement = { targetObject: 'changeSorting' };
                     _this.moveFromPosition = scope.item.sort;
+                    addClass('enableAddNewItem');
+
+                    var categoryForProcessing = angular.element(e.srcElement.parentElement).scope().$parent.category;
+                    categoryForProcessing.movedItemFromCategory = true;
+
+                    _this.movedItem = {
+                        category: categoryForProcessing,
+                        item: scope.item
+                    }
                 }
                 else if (isChangeSubcategorySorting) {
                     _this.draggedElement = { targetObject: 'changeSubcategorySorting' };
@@ -159,21 +171,25 @@
                 }
             }
 
+            function addClass(classSelector) {
+                var listItems = document.querySelectorAll('.' + classSelector);
+
+                listItems.forEach(function (item) {
+                    item.classList.add('ableToDrag');
+                });
+
+            }
+
             function handleDragOver(e) {
                 if (e.preventDefault) {
                     e.preventDefault();
                 }
 
-
-                //e.dataTransfer.dropEffect = 'move';
-                //return false;
-
-
                 var isAddNewElement = false;
                 var isMoveElement = false;
 
                 e.target.classList.forEach(function (item) {
-                  //  console.log(item);
+                    console.log(item);
                     if (item == _this.draggedElement.targetObject && (item == 'enableAdditionCategory' || item == 'enableAddNewItem')) {
                         isAddNewElement = true;
                     } else if (item == _this.draggedElement.targetObject && (item == 'changeSorting' || item == 'changeSubcategorySorting' || item == 'changeSubSubcategorySorting')) {
@@ -211,6 +227,7 @@
 
             function handleDragLeave(e) {
                 this.classList.remove('over');
+               // this.classList.remove('ableToDrag');
             }
 
             function handleDrop(e) {
@@ -223,7 +240,7 @@
                     var sortPosition = 1;
 
                     if (scope.category.categories.length) {
-                        sortPosition = Math.max.apply(null, scope.category.categories.map(function (item) { return item.sort; })) + 1;;
+                        sortPosition = Math.max.apply(null, scope.category.categories.map(function (item) { return item.sort; })) + 1;
                     }
 
                     var category = {
@@ -235,23 +252,37 @@
                     scope.category.categories.push(category);
 
                 } else if (_this.draggedElement.targetObject == 'changeSorting') {
-                    var setPostion = scope.item.sort;
-                    var scopeCategoryList = angular.element(e.srcElement.parentNode.parentNode).scope();
-                    var subCategories = scopeCategoryList.category.items;
-                    var isDown = _this.moveFromPosition - setPostion < 0;
-                    subCategories.forEach(function (item) {
+                    var categoryForProcessing = angular.element(e.srcElement.parentElement).scope().$parent.category;
+                    if (_this.movedItem &&!categoryForProcessing.movedItemFromCategory &&_this.movedItem.category.movedItemFromCategory) {
+                        var item = angular.copy(_this.movedItem.item);
+                        item.sort = Math.max.apply(null,categoryForProcessing.items.map(function(item) { return item.sort; })) +1;
 
-                        if (item.sort == _this.moveFromPosition) {
-                            item.sort = setPostion;
-                        }
-                        else if (item.sort >= setPostion && !isDown) {
-                            item.sort++;
-                        }
-                        else if (item.sort <= setPostion && isDown) {
-                            item.sort--;
-                        }
+                        categoryForProcessing.items.push(item);
 
-                    });
+                        _this.movedItem.category.items.splice(_this.movedItem.category.items.indexOf(_this.movedItem.item),1)
+                        handleDragEnd();
+                    }
+             else {
+                        var setPostion = scope.item.sort;
+                        var scopeCategoryList = angular.element(e.srcElement.parentNode.parentNode).scope();
+                        var subCategories = scopeCategoryList.category.items;
+                        var isDown = _this.moveFromPosition - setPostion < 0;
+                        subCategories.forEach(function(item) {
+
+                            if (item.sort == _this.moveFromPosition) {
+                                item.sort = setPostion;
+                            } else if (item.sort >= setPostion && !isDown) {
+                                item.sort++;
+                            } else if (item.sort <= setPostion && isDown) {
+                                item.sort--;
+                            }
+
+                        });
+                    }
+
+                    if (_this.movedItem) {
+                        _this.movedItem.category.movedItemFromCategory = false;
+                    }
 
                 } else if (_this.draggedElement.targetObject == 'changeSubcategorySorting') {
                     var setPostion = scope.category.sort;
@@ -310,14 +341,21 @@
                 }
 
                 $scope.$apply();
-
+                
                 return false;
             }
 
             function handleDragEnd(e) {
-                //[].forEach.call(cols, function (col) {
-                //    col.classList.remove('over');
-                //});
+
+                var removedClassList = document.querySelectorAll('.over');
+                [].forEach.call(removedClassList, function (col) {
+                    col.classList.remove('over');
+                });
+
+                removedClassList = document.querySelectorAll('.ableToDrag');
+                [].forEach.call(removedClassList, function (col) {
+                    col.classList.remove('ableToDrag');
+                });
             }
 
             function removeEventListeners() {
