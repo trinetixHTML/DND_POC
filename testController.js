@@ -32,6 +32,11 @@
                        sort: 2,
                        name: 'Imaging & Printing',
                        categories: [{ name: 'R&D', items: [{ name: 'Dragable Item 1', sort: 1 }], sort: 1 }]
+                   },
+                   {
+                       sort: 3,
+                       name: 'Printing & Printing',
+                       categories: [{ name: 'R&D', items: [{ name: 'Dragable Item 1', sort: 1 }], sort: 1 }]
                    }]
             };
 

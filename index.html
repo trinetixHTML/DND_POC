@@ -52,19 +52,29 @@
 
 						<pre>{{mainItems | json}}</pre>
 
-						<div class="operatingModel__level1 operatingModel__fullHeight operatingModel__col enableAdditionCategory ableToDrag"  ng-repeat="category in category.categories">
-							<h2 class="operatingModel__title">{{category.name}}</h2>
-							<div draggable="true" class="operatingModel__level2 operatingModel__fullHeight operatingModel__col handlerDrop changeSubcategorySorting enableAdditionCategory dragStart" ng-repeat="category in category.categories | orderBy: 'sort'">
-								<h3 class="operatingModel__title">{{category.name}}</h3>
+						<div class="operatingModel__level1 operatingModel__fullHeight operatingModel__col enableAdditionCategory ableToDrag"
+							ng-repeat="category0 in category.categories">
+							<h2 class="operatingModel__title">{{category0.name}}</h2>
+							
+							<div draggable="true" 
+								class="operatingModel__level2 operatingModel__fullHeight operatingModel__col handlerDrop changeSubcategorySorting enableAdditionCategory dragStart" 
+								ng-repeat="category1 in category0.categories | orderBy: 'sort'">
+								<h3 class="operatingModel__title">{{category1.name}}</h3>
 
-								<div class="operatingModel__level3 dragStart noselect enableAdditionCategory" ng-repeat="category in category.categories | orderBy: 'sort'" snap-on-resize>
-									<div class="operatingModel__capabilitiesWrapper enableAddNewItem" resize-block>
-										<h3 class="operatingModel__title dragStart changeSubSubcategorySorting "  draggable="true">{{category.name}}</h3>
-										<div class="dragableEditor__blockItem changeSorting dragStart changeSortingItem handlerDrop " draggable="true" ng-repeat="item in category.items | orderBy: 'sort'">
+								<div class="operatingModel__level3 dragStart noselect enableAdditionCategory" ng-repeat="category2 in category1.categories | orderBy: 'sort'">
+									<div 
+										class="operatingModel__capabilitiesWrapper enableAddNewItem" 
+										resize-block 
+										column-counts="category0.categories.length"
+										current-column="category1.sort">
+										{{category0.categories.length}}
+										{{category1.sort}}
+										<h3 class="operatingModel__title dragStart changeSubSubcategorySorting "  draggable="true">{{category2.name}}</h3>
+										<div class="dragableEditor__blockItem changeSorting dragStart changeSortingItem handlerDrop " draggable="true" ng-repeat="item in category2.items | orderBy: 'sort'">
 											<div>{{item.name}}</div>
 										</div>
-									</div>
-									<div class="dragSnappingShadow"></div>
+										<!-- <div class="dragSnappingShadow"></div> -->
+									</div>									
 								</div>
 							</div>
 
@@ -79,6 +89,5 @@
 		<script src="testController.js"></script>
 		<script src="resizeDirective.js"></script>
 		<script src="zoomLevel.js"></script>
-		<script src="snapOnResize.js"></script>
 	</body>
 	</html>

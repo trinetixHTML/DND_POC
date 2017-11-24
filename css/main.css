@@ -143,7 +143,7 @@ h3.operatingModel__title {
 	background: #e8e8e8;
 	padding: 10px;
 	padding-top: 30px;	
-	z-index: 2;
+	z-index: 10;
 	position: relative;
 }
 .operatingModel__col {
@@ -252,10 +252,10 @@ h3.operatingModel__title {
 	bottom: 0;
 	left: 0;
 	background: black;
-	opacity: .5;
-	z-index: 1;
-	width: 100%;
-	transition: width .5s;
+	z-index: -1;
+	width: 0;
+	transition: width .1s;
+	opacity: .2;
 }
 .dragSnappingShadow._started {
 	width: 300px;
