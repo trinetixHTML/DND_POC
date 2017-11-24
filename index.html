@@ -52,7 +52,7 @@
 
 						<pre>{{mainItems | json}}</pre>
 
-						<div class="operatingModel__level1 operatingModel__fullHeight operatingModel__col enableAdditionCategory ableToDrag"
+						<div class="operatingModel__level1 operatingModel__fullHeight operatingModel__col enableAdditionCategory"
 							ng-repeat="category0 in category.categories">
 							<h2 class="operatingModel__title">{{category0.name}}</h2>
 							
@@ -61,9 +61,9 @@
 								ng-repeat="category1 in category0.categories | orderBy: 'sort'">
 								<h3 class="operatingModel__title">{{category1.name}}</h3>
 
-								<div class="operatingModel__level3 dragStart noselect enableAdditionCategory" ng-repeat="category2 in category1.categories | orderBy: 'sort'">
+								<div class="operatingModel__level3 dragStart noselect" ng-repeat="category2 in category1.categories | orderBy: 'sort'">
 									<div 
-										class="operatingModel__capabilitiesWrapper enableAddNewItem" 
+										class="operatingModel__capabilitiesWrapper enableAddNewItem handlerDrop" 
 										resize-block 
 										column-counts="category0.categories.length"
 										current-column="category1.sort">
