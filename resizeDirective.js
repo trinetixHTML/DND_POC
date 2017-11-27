@@ -6,7 +6,9 @@
 			scope: {
 				columnCounts: '=',
 				currentColumn: '=',
-				merged: '='
+				merged: '=',
+				resizeRunEvent: '&resizeRun',
+                resizeToColumn: '='
 			},
 			link: function(scope, element, attrs){
 
@@ -19,12 +21,17 @@
 					defaultWidth = parseInt(resized.offsetWidth, 10),
 					isWidthChanged = false,
 					isMergeDirToRight = true;
+				var resizeColumnDirection = -1;
 
-				var GAP_BETWEEN_COLUMNS = 30;
+			    var GAP_BETWEEN_COLUMNS = 30;
+
+
+			    if (scope.resizeToColumn) {
+			        console.log(scope.resizeToColumn);
+			    }
 
 
 				function init(e){
-
 					element.off('click');
 					if(scope.columnCounts == 1){
 						return;
@@ -62,6 +69,7 @@
 					startHeight = parseInt(resized.offsetHeight, 10);
 					posLeft = parseInt(resized.style.left, 10);
 					posTop = parseInt(resized.style.top, 10);
+					scope.sourceItem = angular.element(e.target.offsetParent).scope();
 					e.preventDefault();
 				}
 
@@ -123,6 +131,15 @@
 					if(isWidthChanged){						
 						resized.style.width = defaultWidth + 'px';
 					}
+
+
+				    var srcData = {
+				        sourseScope: scope.sourceItem,
+				        mergeColumnsCounter: scope.resizeColumnDirection
+				    }
+
+				    scope.resizeRunEvent({ data: srcData });
+
 				}
 				function snappingToRight(width, current, start){
 					if(current > start && width > defaultWidth && 20 <= width%parentWidth && width%parentWidth <= parentWidth/4){
@@ -148,7 +165,12 @@
 						sort: scope.currentColumn,
 						mergedColumns: coulmns,
 					}
-					console.log(scope.merged)
+
+
+					if (scope.resizeColumnDirection != coulmns) {
+					    scope.resizeColumnDirection = coulmns;
+					}
+				    //console.log(scope.merged)
 				}
 
 				element.on('click', init);

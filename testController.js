@@ -13,7 +13,9 @@
             };
 
 
-
+            $scope.handleResizeUser = function (item) {
+                item.sourseScope.category2.resizeToColumn = item.mergeColumnsCounter;
+            }
 
 
             $scope.categories = [];
@@ -26,7 +28,7 @@
                        sort: 1,
                        name: 'Personal Systems',
                        categories: [{ name: 'R&D', items: [{ name: 'Dragable Item 1', sort: 1 }, { name: 'Dragable Item 2', sort: 2 }], sort: 1 },
-                                   { name: 'POC', items: [{ name: 'Dragable Item 2', sort: 1 }], sort: 2 }]
+                                   { name: 'POC', resizeToColumn: 3, items: [{ name: 'Dragable Item 2', sort: 1 }], sort: 2 }]
                    },
                    {
                        sort: 2,
@@ -36,7 +38,7 @@
                    {
                        sort: 3,
                        name: 'Printing & Printing',
-                       categories: [{ name: 'R&D', items: [{ name: 'Dragable Item 1', sort: 1 }], sort: 1 }]
+                       categories: [{ name: 'R&D', resizeToColumn: 1, items: [{ name: 'Dragable Item 1', sort: 1 }], sort: 1 }]
                    },
                    {
                        sort: 4,
@@ -115,7 +117,6 @@
                 name: 'Dragable Item 4',
                 addItem: true
             });
-
 
 
             function handleDragStart(e) {

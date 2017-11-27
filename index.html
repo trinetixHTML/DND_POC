@@ -62,12 +62,13 @@
 								<h3 class="operatingModel__title">{{category1.name}}</h3>
 
 								<div class="operatingModel__level3 dragStart noselect" ng-repeat="category2 in category1.categories | orderBy: 'sort'">
-									<div 
-										class="operatingModel__capabilitiesWrapper enableAddNewItem handlerDrop" 
+									<div class="operatingModel__capabilitiesWrapper enableAddNewItem handlerDrop" 
 										resize-block
 										column-counts="category0.categories.length"
 										current-column="category1.sort"
-										merged="mergedItems"
+									    resize-to-column="category2.resizeToColumn"
+									    merged="mergedItems"
+									    resize-run="handleResizeUser(data)"
 										>
 										{{category0.categories.length}}
 										{{category1.sort}}
