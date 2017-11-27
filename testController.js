@@ -37,6 +37,11 @@
                        sort: 3,
                        name: 'Printing & Printing',
                        categories: [{ name: 'R&D', items: [{ name: 'Dragable Item 1', sort: 1 }], sort: 1 }]
+                   },
+                   {
+                       sort: 4,
+                       name: 'Printing & Printing',
+                       categories: [{ name: 'R&D', items: [{ name: 'Dragable Item 1', sort: 1 }], sort: 1 }]
                    }]
             };
 
@@ -186,6 +191,7 @@
             }
 
             function handleDragOver(e) {
+                console.log(e)
                 if (e.preventDefault) {
                     e.preventDefault();
                 }
@@ -194,7 +200,7 @@
                 var isMoveElement = false;
 
                 e.target.classList.forEach(function (item) {
-                    console.log(item);
+                    //console.log(item);
                     if (item == _this.draggedElement.targetObject && (item == 'enableAdditionCategory' || item == 'enableAddNewItem')) {
                         isAddNewElement = true;
                     } else if (item == _this.draggedElement.targetObject && (item == 'changeSorting' || item == 'changeSubcategorySorting' || item == 'changeSubSubcategorySorting')) {
@@ -225,7 +231,6 @@
 
                 e.target.classList.forEach(function (item) {
                     //console.log(item);
-
                 });
 
             }

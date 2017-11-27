@@ -9,35 +9,58 @@
 			},
 			link: function(scope, element, attrs){
 
-				var startX, startY, startWidth, startHeight, posLeft, posTop, shadow,
+				var startX, startY, startWidth, startHeight, posLeft, posTop, shadow, resizerLM, resizerRM, resizerBM, resizerTM,
 					resizebleBlock = angular.element(element),
 					resized = angular.element(resizebleBlock)[0],
 					canvasToListen = $document.find('body'),
 					parent = angular.element(element)[0].offsetParent,
 					parentWidth = parseInt(parent.offsetWidth, 10),
 					defaultWidth = parseInt(resized.offsetWidth, 10),
-					isWidthChanged = false;
+					isWidthChanged = false,
+					sourceArray,
+					mergedArray = []
+					;				
 
 				var GAP_BETWEEN_COLUMNS = 30;
 
-
-
-				function snappingToRight(width){
-					console.log(width, defaultWidth)
-					if(width > defaultWidth && (width%parentWidth)==0){
-						shadow[0].style.width = defaultWidth + parentWidth + GAP_BETWEEN_COLUMNS + 'px';
-						defaultWidth = parseInt(shadow[0].style.width, 10);
+				function sourceArrayInit(length){
+					var array = [];
+					for(var i=0;i<length;i++){
+						array[i] = false;
 					}
-					// if(width < defaultWidth && (width%parentWidth)==0){
-					// 	shadow[0].style.width = defaultWidth - parentWidth - GAP_BETWEEN_COLUMNS + 'px';
-					// 	defaultWidth = parseInt(shadow[0].style.width, 10)
-					// }
+					sourceArray = array;
+				}
+				sourceArrayInit(scope.columnCounts);				
+				
+				function snappingToRight(width, current, start){
+					if(current > start && width > defaultWidth && 20 <= width%parentWidth && width%parentWidth <= parentWidth/4){
+						defaultWidth += parentWidth + GAP_BETWEEN_COLUMNS;
+						shadow[0].style.width = defaultWidth + 'px';
+					}
+					if(current < start && width < defaultWidth && width%parentWidth <= parentWidth){
+						defaultWidth -= parentWidth + GAP_BETWEEN_COLUMNS;
+						if(defaultWidth < parentWidth){
+							defaultWidth = parentWidth;
+						}
+
+						shadow[0].style.width = defaultWidth + 'px';
+					}
+					console.log('snappingToRight', sourceArray)
+					mergeColumns(defaultWidth, parentWidth);					
+				}
+
+				function mergeColumns(a, b){
+					mergedArray = sourceArray;
+					var i = parseInt(a/b, 10);
+					while(i--){
+						mergedArray[i] = true;
+					}
 				}
 
 
 				function init(e){
 
-					element.off('click');					
+					element.off('click');
 
 					if(scope.columnCounts == 1){
 						return;
@@ -45,18 +68,21 @@
 
 					resizebleBlock.addClass('resizable');
 
-					var resizerLM = angular.element('<div class="resizerLM"><div>');
-					var resizerRM = angular.element('<div class="resizerRM"><div>');
-					var resizerBM = angular.element('<div class="resizerBM"><div>');
-					var resizerTM = angular.element('<div class="resizerTM"><div>');
+					resizerLM = angular.element('<div class="resizerLM"><div>');
+					resizerRM = angular.element('<div class="resizerRM"><div>');
+					resizerBM = angular.element('<div class="resizerBM"><div>');
+					resizerTM = angular.element('<div class="resizerTM"><div>');
+					shadow = angular.element('<div class="dragSnappingShadow"><div>')
 					element.append(resizerLM);
 					element.append(resizerRM);
 					element.append(resizerBM);
 					element.append(resizerTM);
+					element.append(shadow);
 					resizerLM.on('mousedown', initDragLeft);
 					resizerRM.on('mousedown', initDragRight);
 					resizerBM.on('mousedown', initDragBottom);
 					resizerTM.on('mousedown', initDragTop);
+
 
 					if(scope.currentColumn == 1){
 						resizerLM[0].outerHTML = ('');
@@ -74,8 +100,6 @@
 					posLeft = parseInt(resized.style.left, 10);
 					posTop = parseInt(resized.style.top, 10);
 					e.preventDefault();
-					shadow = angular.element('<div class="dragSnappingShadow"><div>')
-					element.append(shadow);
 				}
 
 				function initDragRight(e) {        
@@ -100,10 +124,11 @@
 				}
 
 				function doDragRight(e) {
+					shadow[0].style.opacity = .2;
 					var width = startWidth + e.clientX - startX;
 					resized.style.width = width + 'px';
 					resized.style.maxWidth = parentWidth * (scope.columnCounts - scope.currentColumn + 1) + GAP_BETWEEN_COLUMNS*(scope.columnCounts - scope.currentColumn) + 'px';
-					snappingToRight(width);
+					snappingToRight(width, e.clientX, startX);
 					isWidthChanged = true;
 				}
 				function doDragBottom(e) {
@@ -129,12 +154,12 @@
 					canvasToListen.off('mousemove', doDragBottom);
 					canvasToListen.off('mousemove', doDragTop);
 					canvasToListen.off('mouseup', stopDrag);
-					shadow[0].outerHTML = ('');
-					if(isWidthChanged){
-						element[0].style.width = shadow[0].style.width;
-						defaultWidth = parseInt(element[0].style.width, 10);
+					
+					shadow[0].style.opacity = 0;
+					
+					if(isWidthChanged){						
+						resized.style.width = defaultWidth + 'px';
 					}
-					console.log(defaultWidth)
 				}
 
 				element.on('click', init);
