@@ -5,7 +5,8 @@
 		return {
 			scope: {
 				columnCounts: '=',
-				currentColumn: '='
+				currentColumn: '=',
+				merged: '='
 			},
 			link: function(scope, element, attrs){
 
@@ -17,55 +18,17 @@
 					parentWidth = parseInt(parent.offsetWidth, 10),
 					defaultWidth = parseInt(resized.offsetWidth, 10),
 					isWidthChanged = false,
-					sourceArray,
-					mergedArray = []
-					;				
+					isMergeDirToRight = true;
 
 				var GAP_BETWEEN_COLUMNS = 30;
-
-				function sourceArrayInit(length){
-					var array = [];
-					for(var i=0;i<length;i++){
-						array[i] = false;
-					}
-					sourceArray = array;
-				}
-				sourceArrayInit(scope.columnCounts);				
-				
-				function snappingToRight(width, current, start){
-					if(current > start && width > defaultWidth && 20 <= width%parentWidth && width%parentWidth <= parentWidth/4){
-						defaultWidth += parentWidth + GAP_BETWEEN_COLUMNS;
-						shadow[0].style.width = defaultWidth + 'px';
-					}
-					if(current < start && width < defaultWidth && width%parentWidth <= parentWidth){
-						defaultWidth -= parentWidth + GAP_BETWEEN_COLUMNS;
-						if(defaultWidth < parentWidth){
-							defaultWidth = parentWidth;
-						}
-
-						shadow[0].style.width = defaultWidth + 'px';
-					}
-					console.log('snappingToRight', sourceArray)
-					mergeColumns(defaultWidth, parentWidth);					
-				}
-
-				function mergeColumns(a, b){
-					mergedArray = sourceArray;
-					var i = parseInt(a/b, 10);
-					while(i--){
-						mergedArray[i] = true;
-					}
-				}
 
 
 				function init(e){
 
 					element.off('click');
-
 					if(scope.columnCounts == 1){
 						return;
 					}
-
 					resizebleBlock.addClass('resizable');
 
 					resizerLM = angular.element('<div class="resizerLM"><div>');
@@ -160,6 +123,32 @@
 					if(isWidthChanged){						
 						resized.style.width = defaultWidth + 'px';
 					}
+				}
+				function snappingToRight(width, current, start){
+					if(current > start && width > defaultWidth && 20 <= width%parentWidth && width%parentWidth <= parentWidth/4){
+						defaultWidth += parentWidth + GAP_BETWEEN_COLUMNS;
+						shadow[0].style.width = defaultWidth + 'px';
+					}
+					if(current < start && width < defaultWidth && width%parentWidth <= parentWidth){
+						defaultWidth -= parentWidth + GAP_BETWEEN_COLUMNS;
+						if(defaultWidth < parentWidth){
+							defaultWidth = parentWidth;
+						}
+
+						shadow[0].style.width = defaultWidth + 'px';
+					}
+					isMergeDirToRight = true;
+					mergeColumns(defaultWidth, parentWidth);					
+				}
+
+				function mergeColumns(a, b){
+					var coulmns = parseInt(a/b, 10);
+					scope.merged = {
+						isDirToRight: isMergeDirToRight,
+						sort: scope.currentColumn,
+						mergedColumns: coulmns,
+					}
+					console.log(scope.merged)
 				}
 
 				element.on('click', init);
