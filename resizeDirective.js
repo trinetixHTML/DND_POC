@@ -27,7 +27,7 @@
 
 
 			    if (scope.resizeToColumn) {
-			        console.log(scope.resizeToColumn);
+			        angular.element(element)[0].style.width = ((scope.resizeToColumn + 1)*(parentWidth + GAP_BETWEEN_COLUMNS) - GAP_BETWEEN_COLUMNS) + 'px';
 			    }
 
 
@@ -142,6 +142,7 @@
 
 				}
 				function snappingToRight(width, current, start){
+					console.log(defaultWidth)
 					if(current > start && width > defaultWidth && 20 <= width%parentWidth && width%parentWidth <= parentWidth/4){
 						defaultWidth += parentWidth + GAP_BETWEEN_COLUMNS;
 						shadow[0].style.width = defaultWidth + 'px';
